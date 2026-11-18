@@ -2,7 +2,7 @@
 
 MCP server exposing **Thailand reference data** for AI agents, paid per call via [x402](https://x402.org) (HTTP 402 + USDC on Base). No API key, no signup — your wallet pays per request.
 
-- API docs: https://misti-pneumatologic-honourably.ngrok-free.dev/docs
+- API docs: https://api.thaical.xyz/docs
 - Price: **$0.005 / call** (5000 USDC atomic units), `exact` scheme, `eip155:84532` (Base Sepolia testnet)
 
 ## Tools
@@ -22,7 +22,7 @@ MCP server exposing **Thailand reference data** for AI agents, paid per call via
       "args": ["/path/to/thai_ref_mcp.py"],
       "env": {
         "PAYMENT_PRIVATE_KEY": "0x...", 
-        "THAI_REF_URL": "https://misti-pneumatologic-honourably.ngrok-free.dev"
+        "THAI_REF_URL": "https://api.thaical.xyz"
       }
     }
   }
