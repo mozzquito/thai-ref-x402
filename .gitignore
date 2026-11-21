@@ -1,0 +1,7 @@
+secrets/
+metrics*.jsonl
+market_snapshots/
+pre-review-*/
+logs/
+__pycache__/
+*.log

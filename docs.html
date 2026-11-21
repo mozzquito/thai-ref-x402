@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Thai Reference API — x402 docs</title><link rel="icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font-family:system-ui;max-width:820px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1e293b}
+h1{color:#0f766e} h2{margin-top:2rem;border-bottom:2px solid #14b8a6;padding-bottom:.3rem}
+code,pre{background:#f1f5f9;border-radius:6px} pre{padding:1rem;overflow-x:auto}
+table{border-collapse:collapse;width:100%} td,th{border:1px solid #cbd5e1;padding:.5rem;text-align:left}
+.badge{display:inline-block;background:#14b8a6;color:#fff;border-radius:99px;padding:.1rem .8rem;font-size:.8rem;font-weight:600}</style></head><body>
+<h1>Thai Reference API</h1>
+<p><span class="badge">$0.005 / call</span> <span class="badge">x402 - USDC - Base Sepolia</span> <span class="badge">no API key needed</span></p>
+<p>Thailand reference data for AI agents &amp; developers. Pay per request with x402 (HTTP 402) — no signup, no subscription, no API key. Base URL:
+<code>https://api.thaical.xyz</code></p>
+<h2>Quickstart (30 seconds)</h2>
+<pre># reference endpoints (/fx, /gold, /is-business-day, /hs/search, ...) are FREE:
+curl -i https://api.thaical.xyz/fx
+# -&gt; HTTP 200 + JSON data
+
+# paid example — HS duty lookup ($0.005):
+curl -i https://api.thaical.xyz/hs/lookup?code=42023200
+# -&gt; HTTP 402 + PAYMENT-REQUIRED header (the terms: amount, asset, payTo)
+# Retry with the x402 payment header (any x402 client SDK does this automatically):
+#   PAYMENT-SIGNATURE: &lt;signed EIP-3009 payment&gt;
+# -&gt; HTTP 200 + JSON data</pre>
+<p>Client SDKs: <a href="https://github.com/x402-foundation/x402">x402 Python/TS SDK</a>. Payer only needs USDC on Base (EIP-3009 — the payer pays no gas).</p>
+<h2>Endpoints</h2>
+<table><tr><th>Endpoint</th><th>Returns</th></tr>
+<tr><td><code>/fx</code></td><td>THB reference FX (USD/EUR/JPY/GBP/CNY to THB), ECB daily, cached 1h</td></tr>
+<tr><td><code>/gold</code></td><td>Thai gold: XAU spot USD/THB + 96.5% per baht-weight estimate (spot-derived, labeled)</td></tr>
+<tr><td><code>/is-business-day?date=YYYY-MM-DD</code></td><td>Thai business-day check incl. holiday names &amp; substitution days</td></tr>
+<tr><td><code>/bank-business-day?date=YYYY-MM-DD</code></td><td>Bank-of-Thailand business-day convention (settlement dates)</td></tr>
+<tr><td><code>/add-business-days?date=YYYY-MM-DD&amp;n=5</code></td><td>Add N Thai business days (skips Thai holidays)</td></tr>
+<tr><td><code>/hs/search?q=phone</code></td><td>FREE — Thai HS code search (up to 10 hits; MFN duty on the top 3)</td></tr>
+<tr><td><code>/hs/lookup?code=42023200</code></td><td>PAID $0.005 — full HS record + MFN duty for one 8-digit code</td></tr>
+</table>
+<h2>Terms (machine-readable)</h2>
+<p>Paid endpoints (<code>/hs/lookup</code>) respond to unpaid requests with an <b>HTTP 402</b> whose <code>PAYMENT-REQUIRED</code> header carries the full payment terms (x402 v2): scheme <code>exact</code>, asset USDC, network <code>eip155:84532</code>, amount <code>5000</code> (0.005 USDC), maxTimeout 300s. Settlement via Coinbase CDP facilitator. All reference endpoints are free — no 402.</p>
+<h2>Honesty notes</h2>
+<ul><li><b>/gold</b> is derived from international spot + ECB FX — NOT the Gold Traders Association posted price (stated in every response).</li>
+<li><b>/fx</b> follows ECB daily reference rates (no weekend updates).</li>
+<li><b>/bank-business-day</b> covers weekends + Thai public holidays; ad-hoc special bank closures not yet included.</li></ul>
+<h2>MCP wrapper</h2>
+<p>An MCP server wrapping all endpoints (thai_fx, thai_gold, thai_is_business_day, thai_add_business_days) with automatic x402 payment: <a href="https://github.com/mozzquito/thai-ref-x402">mozzquito/thai-ref-x402</a></p>
+<p style="color:#64748b;font-size:.85rem">Testnet (Base Sepolia) — production chain coming. Built with the official x402 Python SDK.</p>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5dbea6c8c3a130f',t:'MTc5NTIyNDQ4NQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5dbea6c8c3a130f',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>

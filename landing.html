@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ThaiCal — Thai settlement calendar &amp; reference data</title><link rel="icon" href="/favicon.ico"><meta property="og:image" content="https://thaical.xyz/logo.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Thai bank settlement calendar & reference data API for AI agents. Pay per call via x402/USDC. No API key, no signup.">
+<style>
+:root{--bg:#0a0f1e;--card:#111a30;--ink:#e8edf7;--mut:#8fa3c7;--acc:#2dd4bf;--acc2:#60a5fa}
+*{margin:0;box-sizing:border-box}
+body{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+.wrap{max-width:960px;margin:0 auto;padding:0 1.25rem}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 0}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}.logo span{color:var(--acc)}
+nav a{color:var(--mut);text-decoration:none;margin-left:1.25rem;font-size:.95rem}
+nav a:hover{color:var(--ink)}
+header{padding:5rem 0 3.5rem;text-align:center;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;inset:-40% -20% auto;height:420px;background:radial-gradient(60% 60% at 50% 40%,rgba(45,212,191,.18),transparent 70%),radial-gradient(50% 50% at 70% 60%,rgba(96,165,250,.14),transparent 70%)}
+.hero{position:relative}
+.pill{display:inline-block;border:1px solid rgba(45,212,191,.4);color:var(--acc);border-radius:99px;padding:.3rem 1rem;font-size:.82rem;margin-bottom:1.5rem}
+h1{font-size:clamp(2.2rem,5.5vw,3.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.12}
+h1 em{font-style:normal;color:var(--acc)}
+.sub{color:var(--mut);font-size:1.1rem;max-width:34rem;margin:1.25rem auto 2.25rem}
+.cta{display:inline-flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-block;padding:.8rem 1.6rem;border-radius:.75rem;font-weight:600;text-decoration:none;font-size:1rem}
+.btn.p{background:var(--acc);color:#04211c}.btn.p:hover{filter:brightness(1.1)}
+.btn.s{border:1px solid #2a3a5e;color:var(--ink)}.btn.s:hover{border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:3.5rem 0}
+.card{background:var(--card);border:1px solid #1e2c4d;border-radius:1rem;padding:1.5rem}
+.card h3{font-size:1.05rem;margin-bottom:.4rem}
+.card p{color:var(--mut);font-size:.92rem}
+.card code{color:var(--acc2);font-size:.85rem}
+section{padding:2.5rem 0}
+h2{font-size:1.7rem;letter-spacing:-.02em;margin-bottom:1.5rem}
+.endpoint{display:flex;justify-content:space-between;gap:1rem;background:var(--card);border:1px solid #1e2c4d;border-radius:.9rem;padding:1rem 1.25rem;margin-bottom:.7rem;align-items:center}
+.endpoint .u{font-family:ui-monospace,monospace;color:var(--acc2);font-size:.92rem}
+.endpoint .d{color:var(--mut);font-size:.88rem;text-align:right}
+pre{background:#0d1526;border:1px solid #1e2c4d;border-radius:.9rem;padding:1.25rem;overflow-x:auto;font-size:.88rem;color:#c7d5f0}
+pre .c{color:#5b6f95}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin:2rem 0}
+.stat{background:var(--card);border:1px solid #1e2c4d;border-radius:.9rem;padding:1.1rem;text-align:center}
+.stat b{display:block;font-size:1.6rem;color:var(--acc)}
+.stat span{color:var(--mut);font-size:.85rem}
+footer{border-top:1px solid #1e2c4d;margin-top:3rem;padding:2rem 0;color:var(--mut);font-size:.85rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+footer a{color:var(--mut)}
+footer a:hover{color:var(--acc)}
+</style></head><body>
+<div class="wrap">
+<nav><div class="logo"><img src="/logo.png" style="height:26px;border-radius:7px;vertical-align:-6px;margin-right:8px">Thai<span>Cal</span></div><div><a href="#endpoints">Endpoints</a><a href="#quickstart">Quickstart</a><a href="https://api.thaical.xyz/docs" target="_blank">Docs</a><a href="https://github.com/mozzquito/thai-ref-x402" target="_blank">GitHub</a></div></nav>
+<header class="hero">
+<div class="pill">free reference layer · HS Code lookup live ($0.005 via x402) · no API key</div>
+<h1>Thai bank settlement calendar,<br><em>free reference layer</em>.</h1>
+<p class="sub">Thai public holidays &ne; Thai bank holidays. If your agent schedules THB payouts, one wrong day means a missed settlement. Reference endpoints (business days, FX, gold, /hs/search) are free; HS duty lookup is paid via x402; KYB &amp; WHT coming.</p>
+<div class="cta"><a class="btn p" href="#quickstart">Try it in 30 seconds</a><a class="btn s" href="https://github.com/mozzquito/thai-ref-x402" target="_blank">MCP wrapper (MIT)</a></div>
+</header>
+<div class="grid">
+<div class="card"><h3>🧾 Pay per request</h3><p>$0.005 per call, paid in USDC over x402. No subscription, no keys to leak, no vendor lock-in.</p></div>
+<div class="card"><h3>⚡ No gas for payers</h3><p>Payments use EIP-3009 signatures — the payer's wallet spends <b>zero ETH</b>. The facilitator settles.</p></div>
+<div class="card"><h3>🤖 Agent-native</h3><p>The 402 challenge carries machine-readable terms. MCP wrapper included for Claude, Cursor &amp; friends.</p></div>
+<div class="card"><h3>🔎 Honest data</h3><p>Every response labels its source and caveats. FX from ECB; holidays incl. substitution days, in Thai and English.</p></div>
+</div>
+<section id="endpoints"><h2>Endpoints</h2>
+<div class="endpoint"><div class="u">/bank-business-day?date=</div><div class="d">Bank of Thailand business-day check — the settlement-calendar hero</div></div>
+<div class="endpoint"><div class="u">/is-business-day?date=</div><div class="d">Thai business day + holiday name (substitution days included)</div></div>
+<div class="endpoint"><div class="u">/add-business-days?date=&amp;n=</div><div class="d">Skip weekends &amp; Thai holidays forward</div></div>
+<div class="endpoint"><div class="u">/fx</div><div class="d">THB reference rates — USD/EUR/JPY/GBP/CNY (ECB daily)</div></div>
+<div class="endpoint"><div class="u">/hs/search?q=</div><div class="d">FREE — search 11,414 Thai HS codes; MFN duty on the top 3 hits</div></div>
+<div class="endpoint"><div class="u">/hs/lookup?code=</div><div class="d">PAID $0.005 — full HS record + MFN duty for one 8-digit code</div></div>
+</section>
+<section id="quickstart"><h2>Quickstart</h2>
+<pre># reference endpoints are FREE:
+curl -i "https://api.thaical.xyz/bank-business-day?date=2026-12-31"
+{"date":"2026-12-31","is_bank_business_day":false,"holiday_name":"วันสิ้นปี"}
+
+# paid example — HS duty lookup ($0.005):
+curl -i "https://api.thaical.xyz/hs/lookup?code=42023200"
+<span class="c"># → HTTP 402 + PAYMENT-REQUIRED header  (0.005 USDC, payTo, Base)
+# retry with PAYMENT-SIGNATURE (any x402 client SDK signs EIP-3009)
+# → HTTP 200</span></pre>
+<div class="stats">
+<div class="stat"><b>$0.005</b><span>per call</span></div>
+<div class="stat"><b>0</b><span>ETH gas for payers</span></div>
+<div class="stat"><b>&lt;1s</b><span>payment round-trip</span></div>
+<div class="stat"><b>MIT</b><span>MCP wrapper license</span></div>
+</div></section>
+<footer>
+<div>ThaiCal — Thailand reference data for agents.<br>Base Sepolia testnet today · Base mainnet coming.</div>
+<div><a href="https://api.thaical.xyz/docs">Full docs</a> · <a href="https://github.com/mozzquito/thai-ref-x402">GitHub</a> · <a href="https://x402.org">What is x402?</a></div>
+</footer>
+</div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5dbea65bc2899a6',t:'MTc5NTIyNDQ4NA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5dbea65bc2899a6',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
