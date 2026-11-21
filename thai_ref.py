@@ -225,7 +225,7 @@ app.register_blueprint(hs_bp)
 # ---------- x402 payment middleware (auto-disable if credentials missing) ----------
 import os
 PAYMENTS_ENABLED = False
-if os.path.exists(THAICAL_HOME + "/.env") and os.path.exists(THAICAL_HOME + "/cdp-api-key.json"):
+if os.path.exists(SECRETS_DIR + "/.env") and os.path.exists(SECRETS_DIR + "/cdp-api-key.json"):
     try:
         from x402 import x402ClientSync  # noqa: F401 — import check
         from x402.http import HTTPFacilitatorClientSync
@@ -234,7 +234,7 @@ if os.path.exists(THAICAL_HOME + "/.env") and os.path.exists(THAICAL_HOME + "/cd
         from x402.http.middleware.flask import payment_middleware
 
         env = {k.strip(): v.strip() for k, v in
-               (l.split("=", 1) for l in open(THAICAL_HOME + "/.env")
+               (l.split("=", 1) for l in open(SECRETS_DIR + "/.env")
                 if "=" in l and not l.startswith("#")
                 and not l.upper().startswith("PAYMENT_PRIVATE_KEY"))}
         # SELLER_ADDRESS is mandatory — never fall back to any payer key/address
@@ -242,7 +242,7 @@ if os.path.exists(THAICAL_HOME + "/.env") and os.path.exists(THAICAL_HOME + "/cd
         if not seller:
             raise RuntimeError("SELLER_ADDRESS missing from .env (secrets dir) — "
                                "refusing to start payments (payer keys must not be used as pay-to)")
-        key = json.load(open(THAICAL_HOME + "/cdp-api-key.json"))
+        key = json.load(open(SECRETS_DIR + "/cdp-api-key.json"))
         from cdp.x402 import create_facilitator_config
         cfg = create_facilitator_config(key["name"], key["privateKey"])
         facilitator = HTTPFacilitatorClientSync({"url": cfg["url"], "create_headers": cfg["create_headers"]})
