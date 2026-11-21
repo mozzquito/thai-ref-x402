@@ -6,6 +6,7 @@ logic reconstructed. Payment (x402) auto-disables if credentials missing.
 """
 import json
 import os
+import sys
 import datetime as dt
 import urllib.request
 from flask import Flask, jsonify, request, send_file
@@ -264,7 +265,13 @@ if os.path.exists(SECRETS_DIR + "/.env") and os.path.exists(SECRETS_DIR + "/cdp-
         import traceback, sys
         with open(THAICAL_HOME + "/x402_disable.log", "w") as f:
             f.write(f"{type(e).__name__}: {e}\n{traceback.format_exc()}")
-        print("x402 disabled:", e, file=sys.stderr, flush=True)
+        print("x402 payment UNAVAILABLE (fail closed):", e, file=sys.stderr, flush=True)
+
+# FAIL CLOSED: server ยังรันเพื่อ free endpoints แต่ /hs/lookup ต้องไม่เปิดฟรี
+# (hs_api.hs_lookup อ่าน config นี้ — ถ้า False จะตอบ 503 {"error": "payment unavailable"})
+app.config["PAYMENTS_ENABLED"] = PAYMENTS_ENABLED
+if not PAYMENTS_ENABLED:
+    print("x402 payments disabled — /hs/lookup returns 503 (fail closed)", file=sys.stderr, flush=True)
 
 # ---------- WSGI guard: rate limit + metrics (ครอบ x402 middleware) ----------
 import time as _time

@@ -19,7 +19,7 @@ try:
 except Exception:  # pragma: no cover — optional dep
     _unidecode = lambda s: s  # noqa: E731
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 THAICAL_HOME = os.environ.get("THAICAL_HOME", "/workspace/thaical")
 HS_DATA_FILE = THAICAL_HOME + "/hs_data.json"
@@ -104,6 +104,10 @@ def hs_search():
 
 @hs_bp.get("/lookup")
 def hs_lookup():
+    # FAIL CLOSED: ถ้า payment middleware ไม่พร้อม (ไม่มี config เข้ามา = False)
+    # ห้ามส่งข้อมูลฟรีเด็ดขาด — ตอบ 503 เท่านั้น
+    if not current_app.config.get("PAYMENTS_ENABLED"):
+        return jsonify({"error": "payment unavailable"}), 503
     code = (request.args.get("code") or "").strip()
     if not re.fullmatch(r"\d{8}", code):
         return jsonify({"error": "'code' must be exactly 8 digits"}), 400
