@@ -118,7 +118,7 @@ def hs_search():
                     if re.match(r"^\s*[^|]{0,4}" + re.escape(a), th) or re.match(r"^\s*[^|]{0,4}" + re.escape(b), th):
                         st += 3
                         break
-                # โดเมน: "เคสโทรศัพท์" = อุปกรณ์ของเครื่องโทรศัพท์ (มือถือ) ไม่ใช่วิทยุ/เครื่องจักร
+                # โดเมน: "เคสโทรศัพท์" = อุปกรณ์ของเครื่องโทรศัพท์ (มือถือ) ไม่ใช่วิทยุ/เครื่องจักร/สิ่งพิมพ์
                 phone_ctx = ("เครื่องโทรศัพท์" in blob or "โทรศัพท์เคลื่อนที่" in blob
                              or "cellular telephone" in blobn or "telephone set" in blobn
                              or "of cellular telephones" in blobn)
@@ -126,6 +126,16 @@ def hs_search():
                 if phone_ctx:
                     st += 3
                 if radio:
+                    st -= 3
+                # หมวดรหัส: อุปกรณ์ประกอบมือถือ / เครื่องโทรศัพท์ 8517.1x ได้โบนัส; อุปกรณ์ตัดต่อสัญญาณ/สิ่งพิมพ์ ถูกหัก
+                code = r["hs_code"]
+                if code.startswith("85177921"):
+                    st += 4
+                elif code.startswith("85171"):
+                    st += 3
+                if code.startswith("851762"):
+                    st -= 3
+                if code.startswith("4911"):
                     st -= 3
                 if st <= 0:
                     st = 0
