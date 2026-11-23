@@ -209,6 +209,7 @@ def status():
     except Exception:
         gold_ok = False
     return jsonify({"service": "ThaiCal — Thai Reference API", "date": today,
+                    "payment": "enabled" if PAYMENTS_ENABLED else "disabled",
                     "endpoints": {
                         "/fx": {"status": "ok" if fx_ok else "degraded", "data_date": fx_ok},
                         "/gold": {"status": "ok" if gold_ok else "degraded"},
@@ -216,7 +217,7 @@ def status():
                         "/bank-business-day": {"status": "ok"},
                         "/add-business-days": {"status": "ok"},
                         "/hs/search": {"status": "ok"},
-                        "/hs/lookup": {"status": "payment_required"},
+                        "/hs/lookup": {"status": "payment_required" if PAYMENTS_ENABLED else "payment_disabled"},
                     }})
 
 # ---------- HS blueprint (free to mount; paid via x402 when credentials exist) ----------
