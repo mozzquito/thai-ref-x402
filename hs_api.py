@@ -78,7 +78,51 @@ def hs_search():
         for t in tokens:
             if re.search(r"(?<![a-z])" + re.escape(t) + r"(?![a-z])", blob):
                 s += 2
+        # tie-breaker: คำ match อยู่ต้นประโยค = คำอธิบายหลัก (กัน "สิ่งพิมพ์ที่ให้สิทธิ์...โทรศัพท์" ขึ้นก่อน)
+        for t in tokens:
+            if re.match(r"^\s*[^|]{0,4}" + re.escape(t), blob.split("||")[0]):
+                s += 2
+                break
         scored.append((s, r))
+    
+    # Thai no-space compound fallback: "เคสโทรศัพท์" -> ["เคส","โทรศัพท์"]
+    if not scored and _THAI_RE.search(ql) and " " not in ql.strip():
+        n = len(ql)
+        best_pairs = []
+        for i in range(2, n - 1):
+            a, b = ql[:i], ql[i:]
+            if len(a) >= 2 and len(b) >= 2:
+                best_pairs.append((a, b))
+        if best_pairs:
+            pair_hits = []
+            part_hits = {}
+            for r, blob, blobn in _SEARCH:
+                s = 0
+                for a, b in best_pairs:
+                    if a in blob and b in blob:
+                        s = 3
+                        break
+                if s:
+                    pair_hits.append((s, r))
+                    continue
+                # AND ไม่เจอ -> นับคำใดคำหนึ่ง (ยิ่งคำยาวตรงยิ่งดี)
+                st = 0
+                for a, b in best_pairs:
+                    if a in blob:
+                        st = max(st, 1 + len(a) // 6)
+                    if b in blob:
+                        st = max(st, 1 + len(b) // 6)
+                # tie-breaker ต้นประโยค (TH blob อยู่ก่อน ||)
+                th = blob.split("||")[0]
+                for a, b in best_pairs:
+                    if re.match(r"^\s*[^|]{0,4}" + re.escape(a), th) or re.match(r"^\s*[^|]{0,4}" + re.escape(b), th):
+                        st += 2
+                        break
+                if st:
+                    part_hits.setdefault(st, []).append(r)
+            pool = pair_hits or [(s, r) for s, rs in part_hits.items() for r in rs]
+            scored = sorted(pool, key=lambda x: -x[0])[:TOP_N]
+
     scored.sort(key=lambda x: -x[0])
     hits = [r for _, r in scored[:TOP_N]]
     results = []
