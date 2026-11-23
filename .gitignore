@@ -5,3 +5,4 @@ pre-review-*/
 logs/
 __pycache__/
 *.log
+.env
