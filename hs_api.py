@@ -116,8 +116,19 @@ def hs_search():
                 th = blob.split("||")[0]
                 for a, b in best_pairs:
                     if re.match(r"^\s*[^|]{0,4}" + re.escape(a), th) or re.match(r"^\s*[^|]{0,4}" + re.escape(b), th):
-                        st += 2
+                        st += 3
                         break
+                # โดเมน: "เคสโทรศัพท์" = อุปกรณ์ของเครื่องโทรศัพท์ (มือถือ) ไม่ใช่วิทยุ/เครื่องจักร
+                phone_ctx = ("เครื่องโทรศัพท์" in blob or "โทรศัพท์เคลื่อนที่" in blob
+                             or "cellular telephone" in blobn or "telephone set" in blobn
+                             or "of cellular telephones" in blobn)
+                radio = "วิทยุโทรศัพท์" in blob and "เครื่องโทรศัพท์" not in blob
+                if phone_ctx:
+                    st += 3
+                if radio:
+                    st -= 3
+                if st <= 0:
+                    st = 0
                 if st:
                     part_hits.setdefault(st, []).append(r)
             pool = pair_hits or [(s, r) for s, rs in part_hits.items() for r in rs]
